@@ -1,8 +1,8 @@
 rootProject.name = "kala-foreign"
 
 val modules = listOf(
-    "annotations",
-    "core"
+    "core",
+    "processor"
 )
 
 include(modules.map { "${rootProject.name}-$it" })
