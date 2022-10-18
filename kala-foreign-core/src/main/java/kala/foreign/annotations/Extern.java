@@ -12,9 +12,6 @@ public @interface Extern {
 
     String charset() default "UTF-8";
 
-    CallingConvention callingConvention() default CallingConvention.Cdecl;
+    String callingConvention() default "cdecl";
 
-    enum CallingConvention {
-        Cdecl, StdCall, SystemApi
-    }
 }
