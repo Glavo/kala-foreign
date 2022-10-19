@@ -5,13 +5,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.CLASS)
 public @interface Extern {
-    String name() default "";
 
-    String charset() default "UTF-8";
+    boolean isForeign() default true;
 
-    String callingConvention() default "cdecl";
+    String name() default DEFAULT;
 
+    String charset() default DEFAULT;
+
+    String callingConvention() default DEFAULT;
+
+    Class<?> nativeType() default Extern.class;
+
+    String DEFAULT = "<default value>";
 }
