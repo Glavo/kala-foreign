@@ -6,11 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Extern {
-
-    boolean isForeign() default true;
-
     String name() default DEFAULT;
 
     String charset() default DEFAULT;
@@ -18,6 +15,8 @@ public @interface Extern {
     String callingConvention() default DEFAULT;
 
     Class<?> nativeType() default Extern.class;
+
+    boolean isJNI() default false;
 
     String DEFAULT = "<default value>";
 }

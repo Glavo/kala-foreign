@@ -1,8 +1,8 @@
 dependencies {
     implementation(project(":kala-foreign-core"))
 
-    // https://mvnrepository.com/artifact/javassist/javassist
-    implementation("javassist:javassist:3.12.1.GA")
+    // https://mvnrepository.com/artifact/org.javassist/javassist
+    implementation("org.javassist:javassist:3.29.2-GA")
 }
 
 tasks.jar {

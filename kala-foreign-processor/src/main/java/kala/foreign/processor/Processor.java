@@ -4,13 +4,13 @@ import javassist.*;
 import kala.foreign.annotations.Extern;
 
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public final class Processor {
@@ -24,6 +24,24 @@ public final class Processor {
         this.files = files;
     }
 
+    private void processMethod(
+            Path classFilePath, FileTime lastModifiedTime,
+            CtClass cls, Extern classExternAnnotation,
+            CtConstructor classInitializer,
+            CtMethod method
+    ) throws Exception {
+        var externAnnotation = Objects.requireNonNullElse((Extern) method.getAnnotation(Extern.class), DummyExtern.INSTANCE);
+        if (externAnnotation.isJNI())
+            return;
+
+        String signature = method.getGenericSignature();
+        if (signature.startsWith("<"))
+            throw new UnsupportedOperationException("Generic methods are currently not supported");
+
+
+
+        method.setModifiers(method.getModifiers() & ~Modifier.NATIVE);
+    }
 
     private void processFile(Path file) throws Exception {
         CtClass cls;
@@ -31,14 +49,18 @@ public final class Processor {
             cls = classPool.makeClass(input);
         }
 
+        if (cls.isInterface())
+            return;
+
         var classExternAnnotation = (Extern) cls.getAnnotation(Extern.class);
-        if (classExternAnnotation == null || !classExternAnnotation.isForeign())
+        if (classExternAnnotation == null || classExternAnnotation.isJNI())
             return;
 
         FileTime lastModifiedTime = Files.getLastModifiedTime(file);
 
         var nativeMethods = Arrays.stream(cls.getDeclaredMethods())
-                .filter(it -> Modifier.isNative(it.getModifiers()))
+                .filter(it -> Modifier.isNative(it.getModifiers())
+                        && Modifier.isStatic(it.getModifiers()))
                 .toList();
 
         if (nativeMethods.isEmpty())
@@ -48,8 +70,7 @@ public final class Processor {
 
         for (CtMethod nativeMethod : nativeMethods) {
             try {
-                nativeMethod.setModifiers(nativeMethod.getModifiers() & ~Modifier.NATIVE);
-
+                processMethod(file, lastModifiedTime, cls, classExternAnnotation, classInitializer, nativeMethod);
             } catch (Throwable e) {
                 System.err.println("An error occurred while processing method " + nativeMethod.toString());
                 throw e;
