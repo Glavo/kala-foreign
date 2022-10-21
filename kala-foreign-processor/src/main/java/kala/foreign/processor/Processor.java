@@ -1,6 +1,7 @@
 package kala.foreign.processor;
 
 import javassist.*;
+import javassist.bytecode.SignatureAttribute;
 import kala.foreign.annotations.Extern;
 
 import java.io.DataOutputStream;
@@ -26,8 +27,7 @@ public final class Processor {
 
     private void processMethod(
             Path classFilePath, FileTime lastModifiedTime,
-            CtClass cls, Extern classExternAnnotation,
-            CtConstructor classInitializer,
+            CtClass cls, Extern classExternAnnotation, CtConstructor classInitializer,
             CtMethod method
     ) throws Exception {
         var externAnnotation = Objects.requireNonNullElse((Extern) method.getAnnotation(Extern.class), DummyExtern.INSTANCE);
@@ -38,6 +38,16 @@ public final class Processor {
         if (signature.startsWith("<"))
             throw new UnsupportedOperationException("Generic methods are currently not supported");
 
+        var methodSignature = SignatureAttribute.toMethodSignature(signature);
+        List<Extern> parameterAnnotations = Arrays.stream(method.getParameterAnnotations())
+                .map(array -> Arrays.stream(array)
+                        .filter(it -> it instanceof Extern)
+                        .map(it -> (Extern) it)
+                        .findAny()
+                        .orElse(DummyExtern.INSTANCE))
+                .toList();
+
+        assert methodSignature.getParameterTypes().length == parameterAnnotations.size();
 
 
         method.setModifiers(method.getModifiers() & ~Modifier.NATIVE);
