@@ -18,5 +18,7 @@ public @interface Extern {
 
     boolean isJNI() default false;
 
+    Class<?> nativeReturnType() default Extern.class;
+
     String DEFAULT = "<default value>";
 }

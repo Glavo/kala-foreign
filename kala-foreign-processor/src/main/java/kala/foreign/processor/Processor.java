@@ -49,6 +49,12 @@ public final class Processor {
 
         assert methodSignature.getParameterTypes().length == parameterAnnotations.size();
 
+        for (int i = 0; i < methodSignature.getParameterTypes().length; i++) {
+            var parameterType = methodSignature.getParameterTypes()[i];
+            var parameterAnnotation = parameterAnnotations.get(i);
+
+
+        }
 
         method.setModifiers(method.getModifiers() & ~Modifier.NATIVE);
     }
