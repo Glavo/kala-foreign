@@ -49,9 +49,12 @@ public final class Processor {
 
         assert methodSignature.getParameterTypes().length == parameterAnnotations.size();
 
+
+        var methodExternChain = new ExternChain(externAnnotation, new ExternChain(classExternAnnotation));
+
         for (int i = 0; i < methodSignature.getParameterTypes().length; i++) {
             var parameterType = methodSignature.getParameterTypes()[i];
-            var parameterAnnotation = parameterAnnotations.get(i);
+            var externChain = new ExternChain(parameterAnnotations.get(i), methodExternChain);
 
 
         }
