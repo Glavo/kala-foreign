@@ -10,6 +10,8 @@ import java.lang.annotation.Target;
 public @interface Extern {
     String name() default DEFAULT;
 
+    String prefix() default DEFAULT;
+
     String charset() default DEFAULT;
 
     String callingConvention() default DEFAULT;

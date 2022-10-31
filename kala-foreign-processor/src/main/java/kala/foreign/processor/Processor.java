@@ -34,6 +34,8 @@ public final class Processor {
         if (externAnnotation.isJNI())
             return;
 
+        var methodExternChain = new ExternChain(externAnnotation, new ExternChain(classExternAnnotation));
+
         String signature = method.getGenericSignature();
         if (signature.startsWith("<"))
             throw new UnsupportedOperationException("Generic methods are currently not supported");
@@ -49,12 +51,25 @@ public final class Processor {
 
         assert methodSignature.getParameterTypes().length == parameterAnnotations.size();
 
-
-        var methodExternChain = new ExternChain(externAnnotation, new ExternChain(classExternAnnotation));
+        var methodNativeName = externAnnotation.name().equals(Extern.DEFAULT)
+                ? method.getName()
+                : externAnnotation.name();
+        if (!classExternAnnotation.prefix().equals(Extern.DEFAULT))
+            methodNativeName = classExternAnnotation.prefix() + methodNativeName;
+        else if (!classExternAnnotation.name().equals(Extern.DEFAULT))
+            methodNativeName = classExternAnnotation.prefix() + "_" + methodNativeName;
 
         for (int i = 0; i < methodSignature.getParameterTypes().length; i++) {
             var parameterType = methodSignature.getParameterTypes()[i];
-            var externChain = new ExternChain(parameterAnnotations.get(i), methodExternChain);
+
+            if (parameterType instanceof SignatureAttribute.ClassType type) {
+
+            } else {
+                throw new UnsupportedOperationException("Unsupported parameter type: " + parameterType);
+            }
+
+            var parameterExtern = new ExternChain(parameterAnnotations.get(i), methodExternChain);
+
 
 
         }
