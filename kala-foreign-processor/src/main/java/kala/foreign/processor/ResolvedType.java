@@ -1,5 +1,9 @@
 package kala.foreign.processor;
 
-interface ResolveType {
+import javassist.bytecode.SignatureAttribute;
+
+import java.lang.reflect.Type;
+
+record ResolvedType(Type nativeType, SignatureAttribute.Type javaType) {
 
 }
