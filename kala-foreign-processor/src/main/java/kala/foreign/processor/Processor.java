@@ -59,15 +59,9 @@ public final class Processor {
         else if (!classExternAnnotation.name().equals(Extern.DEFAULT))
             methodNativeName = classExternAnnotation.prefix() + "_" + methodNativeName;
 
+        ArrayList<ResolvedType> resolvedParameterTypes = new ArrayList<>();
         for (int i = 0; i < methodSignature.getParameterTypes().length; i++) {
             var parameterType = methodSignature.getParameterTypes()[i];
-
-            if (parameterType instanceof SignatureAttribute.ClassType type) {
-
-            } else {
-                throw new UnsupportedOperationException("Unsupported parameter type: " + parameterType);
-            }
-
             var parameterExtern = new ExternChain(parameterAnnotations.get(i), methodExternChain);
 
 
