@@ -10,6 +10,9 @@ public final class Foreign {
 
     private static final int REQUIRED_JAVA_VERSION = 19;
 
+    private static final boolean useLambdaMetafactory = getBooleanOption("kala.foreign.useLambdaMetafactory", true);
+    private static final boolean useDynamicClassLoad = getBooleanOption("kala.foreign.useDynamicClassLoad", true);
+
     static final Unsafe UNSAFE;
 
     static {
@@ -35,12 +38,10 @@ public final class Foreign {
         }
 
         // Enable Native Access
-        if (!javaLangAccess.isEnableNativeAccess(theModule)) {
-            if (theModule.isNamed()) {
-                javaLangAccess.addEnableNativeAccess(theModule);
-            } else {
-                javaLangAccess.addEnableNativeAccessAllUnnamed();
-            }
+        if (theModule.isNamed()) {
+            javaLangAccess.addEnableNativeAccess(theModule);
+        } else {
+            javaLangAccess.addEnableNativeAccessAllUnnamed();
         }
 
         // Add Opens
@@ -53,6 +54,11 @@ public final class Foreign {
 
         UNSAFE = Unsafe.getUnsafe();
 
+    }
+
+    private static boolean getBooleanOption(String name, boolean defaultValue) {
+        String value = System.getProperty(name);
+        return value == null ? defaultValue : "true".equalsIgnoreCase(value);
     }
 
     public static void init() {
