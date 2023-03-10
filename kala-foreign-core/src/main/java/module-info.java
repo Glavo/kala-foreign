@@ -1,7 +1,5 @@
-module kala.foreign.core {
-    exports kala.foreign.annotations;
-
-    opens kala.foreign.internal;
-
+module kala.foreign {
     requires static kala.base;
+
+    exports kala.foreign.annotations;
 }
