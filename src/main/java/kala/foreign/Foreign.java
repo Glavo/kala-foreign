@@ -8,10 +8,10 @@ import java.util.function.BiConsumer;
 
 public final class Foreign {
 
-    private static final int REQUIRED_JAVA_VERSION = 19;
+    static final System.Logger LOGGER = System.getLogger("kala.foreign");
 
-    private static final boolean useLambdaMetafactory = getBooleanOption("kala.foreign.useLambdaMetafactory", true);
-    private static final boolean useDynamicClassLoad = getBooleanOption("kala.foreign.useDynamicClassLoad", true);
+    private static final int REQUIRED_JAVA_VERSION = 19;
+    private static final boolean useDynamicClassLoad = Boolean.parseBoolean(System.getProperty("kala.foreign.useDynamicClassLoad", "true"));
 
     static final Unsafe UNSAFE;
 
@@ -54,11 +54,6 @@ public final class Foreign {
 
         UNSAFE = Unsafe.getUnsafe();
 
-    }
-
-    private static boolean getBooleanOption(String name, boolean defaultValue) {
-        String value = System.getProperty(name);
-        return value == null ? defaultValue : "true".equalsIgnoreCase(value);
     }
 
     public static void init() {
