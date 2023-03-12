@@ -4,6 +4,11 @@ import jdk.internal.access.JavaLangAccess;
 import jdk.internal.access.SharedSecrets;
 import jdk.internal.misc.Unsafe;
 
+import java.lang.foreign.Linker;
+import java.lang.foreign.SymbolLookup;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
 
 public final class Foreign {
@@ -56,6 +61,19 @@ public final class Foreign {
 
     }
 
-    public static void init() {
+    public static <T> T load(Class<T> clazz, SymbolLookup symbolLookup, Linker linker) {
+        if (!Modifier.isAbstract(clazz.getModifiers())) {
+            throw new IllegalArgumentException(clazz + " must be abstract");
+        }
+
+        ArrayList<Method> methods = new ArrayList<>();
+        for (Method method : clazz.getMethods()) {
+            if (Modifier.isAbstract(method.getModifiers())) {
+                methods.add(method);
+            }
+        }
+
+        return null; // TODO
     }
+
 }
