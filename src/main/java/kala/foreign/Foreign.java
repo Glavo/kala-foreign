@@ -76,4 +76,7 @@ public final class Foreign {
         return null; // TODO
     }
 
+    public static <T> T findFunction(Class<T> clazz, SymbolLookup symbolLookup, Linker linker) {
+        return null; // TODO
+    }
 }
