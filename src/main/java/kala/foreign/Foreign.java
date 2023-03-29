@@ -22,7 +22,7 @@ public final class Foreign {
 
     static final System.Logger LOGGER = System.getLogger("kala.foreign");
 
-    private static final int REQUIRED_JAVA_VERSION = 19;
+    private static final int REQUIRED_JAVA_VERSION = 20;
     private static final boolean useDynamicClassLoad;
 
     static final Unsafe UNSAFE;
