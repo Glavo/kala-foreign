@@ -66,11 +66,7 @@ public final class Foreign {
         }
 
         // Enable Native Access
-        if (theModule.isNamed()) {
-            javaLangAccess.addEnableNativeAccess(theModule);
-        } else {
-            javaLangAccess.addEnableNativeAccessAllUnnamed();
-        }
+        javaLangAccess.addEnableNativeAccess(theModule);
 
         // Add Opens
         BiConsumer<Module, String> addOpens = theModule.isNamed()
